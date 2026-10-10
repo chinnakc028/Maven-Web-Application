@@ -1,0 +1,12 @@
+node { def MavenHome = tool name: 'Maven'
+
+stage('Clone Code') { git credentialsId: '0a33abeb-d188-4d30-831f-9398899c49f4', url: 'https://github.com/chinnakc028/Maven-Web-Application.git' }
+
+stage('Build') { sh "${MavenHome}/bin/mvn clean package" }
+
+stage('deploy tomcat'){
+    sshagent(credentials: ['c64155e7-da1e-4b14-85b7-668176260277'], executable: '') {
+    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@54.225.10.76:/opt/apache-tomcat-9.0.122/webapps/"
+}
+}
+}
